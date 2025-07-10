@@ -1,0 +1,22 @@
+// -output binario (tiene una constante de un binario, cuando se inicie el código se encienden los leds del valor binario)
+
+
+const byte valorBinario = B10101010; 
+
+void setup() {
+  
+  for (int i = 0; i < 8; i++) {
+    pinMode(2 + i, OUTPUT);
+  }
+
+ 
+  for (int i = 0; i < 8; i++) {
+    
+    bool estado = bitRead(valorBinario, i);
+    digitalWrite(2 + i, estado); 
+  }
+}
+
+void loop() {
+  
+}
