@@ -1,0 +1,32 @@
+const int led8bits[8] = {2, 3, 4, 5, 6, 7, 8, 9};  // Pines conectados a los LEDs
+int pulsador = 10;
+bool estadopulsador = HIGH;
+int contadorDecimal = 0;
+
+void setup() {
+  // Configura los 8 pines como salida
+  for (int i = 0; i < 8; i++) {
+    pinMode(led8bits[i], OUTPUT);
+  }
+  pinMode(pulsador, INPUT);
+}
+
+void loop() {
+  bool estadoActual = digitalRead(pulsador);
+
+  // Detectar flanco de bajada
+  if (estadopulsador == HIGH && estadoActual == LOW) {
+    contadorDecimal++;
+  }
+
+  if (contadorDecimal > 255) {
+    contadorDecimal = 0;
+  }
+
+  estadopulsador = estadoActual; // Actualizar estado
+
+  // Recorre los 8 bits del número decimal
+  for (int i = 0; i < 8; i++) {
+    digitalWrite(led8bits[i], bitRead(contadorDecimal, i));
+  }
+}
