@@ -1,0 +1,57 @@
+int leds[] = {13, 12, 11, 10, 9, 8, 7, 6, 5, 4};
+int totalLeds = 10;
+int boton = 2;
+
+bool encendido = false;  // indica si la secuencia está activa
+bool estadoAnterior = LOW;
+
+void setup() {
+  for (int i = 0; i < totalLeds; i++) {
+    pinMode(leds[i], OUTPUT);
+  }
+  pinMode(boton, INPUT);
+}
+
+void loop() {
+  bool estadoActual = digitalRead(boton);
+
+  // Detectar cambio de estado (LOW -> HIGH)
+  if (estadoActual == HIGH && estadoAnterior == LOW) {
+    encendido = !encendido; // alterna entre ON y OFF
+    delay(200); // anti-rebote
+  }
+
+  estadoAnterior = estadoActual;
+
+  if (encendido) {
+    // Secuencia 1: de izquierda a derecha
+    for (int i = 0; i < totalLeds && encendido; i++) {
+      digitalWrite(leds[i], HIGH);
+      delay(100);
+      digitalWrite(leds[i], LOW);
+
+      // Verifica si se presionó de nuevo el botón durante la secuencia
+      if (digitalRead(boton) == HIGH) {
+        encendido = false;
+        break;
+      }
+    }
+
+    // Secuencia 2: de derecha a izquierda
+    for (int i = totalLeds - 1; i >= 0 && encendido; i--) {
+      digitalWrite(leds[i], HIGH);
+      delay(100);
+      digitalWrite(leds[i], LOW);
+
+      if (digitalRead(boton) == HIGH) {
+        encendido = false;
+        break;
+      }
+    }
+  } else {
+    // Si está apagado, asegurar que todos los LEDs estén OFF
+    for (int i = 0; i < totalLeds; i++) {
+      digitalWrite(leds[i], LOW);
+    }
+  }
+}
